@@ -55,6 +55,9 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--indent", type=int, default=2, help="JSON indent (default 2).")
     args = parser.parse_args(argv)
 
+    if args.delimiter is not None and len(args.delimiter) != 1:
+        parser.error("--delimiter must be a single character")
+
     text = sys.stdin.read() if args.input == "-" else open(args.input, encoding="utf-8").read()
     try:
         rows = parse_csv(text, args.delimiter)
