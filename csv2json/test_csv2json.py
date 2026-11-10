@@ -1,4 +1,6 @@
-from csv2json import parse_csv
+import pytest
+
+from csv2json import main, parse_csv
 
 
 def test_basic_comma():
@@ -30,3 +32,11 @@ def test_forced_delimiter_pipe():
 
 def test_empty_input():
     assert parse_csv("") == []
+
+
+def test_main_rejects_multi_character_delimiter(tmp_path):
+    src = tmp_path / "in.csv"
+    src.write_text("a;b\n1;2\n", encoding="utf-8")
+    with pytest.raises(SystemExit) as exc_info:
+        main([str(src), str(tmp_path / "out.json"), "--delimiter", ";;"])
+    assert exc_info.value.code == 2
